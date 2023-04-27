@@ -295,9 +295,13 @@ func (s *Server) ListenServeAndSignal(signal chan error) error {
 	ln, err := net.Listen(s.net, s.laddr)
 	if err == nil {
 	    if tcpLn, ok := ln.(*net.TCPListener); ok {
+		    
+		    fmt.Printf("adsfsa")
 		if tcpFile, err := tcpLn.File(); err == nil {
+			fmt.Printf("12345")
 		    defer tcpFile.Close()
 		    if err := unix.SetsockoptInt(int(tcpFile.Fd()), unix.SOL_SOCKET, unix.SO_REUSEPORT, 1); err != nil {
+			    fmt.Printf("6546547")
 			return fmt.Errorf("failed to set SO_REUSEPORT: %v", err)
 		    }
 		}
@@ -334,9 +338,12 @@ func (s *TLSServer) ListenServeAndSignal(signal chan error) error {
 	ln, err := tls.Listen(s.net, s.laddr, s.config)
 	if err == nil {
     if tcpLn, ok := ln.(*net.TCPListener); ok {
+	    fmt.Printf("sazxcaxsada")
         if tcpFile, err := tcpLn.File(); err == nil {
+		fmt.Printf("aaaa6546547")
             defer tcpFile.Close()
             if err := unix.SetsockoptInt(int(tcpFile.Fd()), unix.SOL_SOCKET, unix.SO_REUSEPORT, 1); err != nil {
+		    fmt.Printf("dddd6546547")
                 return fmt.Errorf("failed to set SO_REUSEPORT: %v", err)
             }
         }
