@@ -292,6 +292,16 @@ func ListenAndServeNetworkTLS(
 // when listening. signal can be nil.
 func (s *Server) ListenServeAndSignal(signal chan error) error {
 	ln, err := net.Listen(s.net, s.laddr)
+	if err == nil {
+    if tcpLn, ok := ln.(*net.TCPListener); ok {
+        if tcpFile, err := tcpLn.File(); err == nil {
+            defer tcpFile.Close()
+            if err := unix.SetsockoptInt(int(tcpFile.Fd()), unix.SOL_SOCKET, unix.SO_REUSEPORT, 1); err != nil {
+                return nil, fmt.Errorf("failed to set SO_REUSEPORT: %v", err)
+            }
+        }
+    }
+}
 	if err != nil {
 		if signal != nil {
 			signal <- err
@@ -321,6 +331,16 @@ func (s *Server) Serve(ln net.Listener) error {
 // when listening. signal can be nil.
 func (s *TLSServer) ListenServeAndSignal(signal chan error) error {
 	ln, err := tls.Listen(s.net, s.laddr, s.config)
+	if err == nil {
+    if tcpLn, ok := ln.(*net.TCPListener); ok {
+        if tcpFile, err := tcpLn.File(); err == nil {
+            defer tcpFile.Close()
+            if err := unix.SetsockoptInt(int(tcpFile.Fd()), unix.SOL_SOCKET, unix.SO_REUSEPORT, 1); err != nil {
+                return nil, fmt.Errorf("failed to set SO_REUSEPORT: %v", err)
+            }
+        }
+    }
+}
 	if err != nil {
 		if signal != nil {
 			signal <- err
