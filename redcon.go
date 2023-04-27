@@ -337,7 +337,7 @@ func (s *TLSServer) ListenServeAndSignal(signal chan error) error {
         if tcpFile, err := tcpLn.File(); err == nil {
             defer tcpFile.Close()
             if err := unix.SetsockoptInt(int(tcpFile.Fd()), unix.SOL_SOCKET, unix.SO_REUSEPORT, 1); err != nil {
-                return nil, fmt.Errorf("failed to set SO_REUSEPORT: %v", err)
+                return fmt.Errorf("failed to set SO_REUSEPORT: %v", err)
             }
         }
     }
