@@ -294,15 +294,15 @@ func ListenAndServeNetworkTLS(
 func (s *Server) ListenServeAndSignal(signal chan error) error {
 	ln, err := net.Listen(s.net, s.laddr)
 	if err == nil {
-    if tcpLn, ok := ln.(*net.TCPListener); ok {
-        if tcpFile, err := tcpLn.File(); err == nil {
-            defer tcpFile.Close()
-            if err := unix.SetsockoptInt(int(tcpFile.Fd()), unix.SOL_SOCKET, unix.SO_REUSEPORT, 1); err != nil {
-                return nil, fmt.Errorf("failed to set SO_REUSEPORT: %v", err)
-            }
-        }
-    }
-}
+	    if tcpLn, ok := ln.(*net.TCPListener); ok {
+		if tcpFile, err := tcpLn.File(); err == nil {
+		    defer tcpFile.Close()
+		    if err := unix.SetsockoptInt(int(tcpFile.Fd()), unix.SOL_SOCKET, unix.SO_REUSEPORT, 1); err != nil {
+			return fmt.Errorf("failed to set SO_REUSEPORT: %v", err)
+		    }
+		}
+	    }
+	}
 	if err != nil {
 		if signal != nil {
 			signal <- err
